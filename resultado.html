@@ -8,28 +8,44 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
+      background-color: #060147;
       padding: 30px;
     }
     .container {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 10px;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
       max-width: 600px;
       margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
     }
     h1 {
       text-align: center;
+      color: #060147;
+      margin-bottom: 30px;
     }
     .info {
       margin-bottom: 20px;
+      font-size: 16px;
+      color: #222;
+    }
+    .info p {
+      margin: 8px 0;
     }
     button {
       display: block;
-      margin: auto;
-      padding: 10px 20px;
+      margin: 30px auto 0 auto;
+      padding: 12px 25px;
       font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #060147;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #1a1a7f;
     }
   </style>
 </head>
@@ -68,7 +84,11 @@
       const modelo = new URLSearchParams(window.location.search).get('modelo') || 'N/A';
       const decision = new URLSearchParams(window.location.search).get('decision') || 'N/A';
 
-      const logo = await fetch('/static/tec_monterrey_nuevo_logo.png')
+      const fecha = new Date().toLocaleDateString('es-MX', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+
+      const logoBase64 = await fetch('/static/Logo HSJ.png')
         .then(res => res.blob())
         .then(blob => new Promise(resolve => {
           const reader = new FileReader();
@@ -76,14 +96,54 @@
           reader.readAsDataURL(blob);
         }));
 
-      doc.addImage(logo, 'PNG', 10, 10, 40, 40);
-      doc.setFontSize(14);
-      doc.text('Tecnológico de Monterrey', 55, 25);
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const logoWidth = 80;
+      const logoHeight = 30;
+      const xCenter = (pageWidth - logoWidth) / 2;
 
+      // Logo
+      doc.addImage(logoBase64, 'PNG', xCenter, 10, logoWidth, logoHeight);
+
+      // Título
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text('Resultado de Evaluación', pageWidth / 2, 51, { align: 'center' });
+
+      // Fecha
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(11);
+      doc.text(`Fecha: ${fecha}`, pageWidth / 2, 58, { align: 'center' });
+
+      // Contenido
       doc.setFontSize(12);
-      doc.text(`\n\nEvaluación de Refacción\n\nNombre del equipo: ${nombre}\nCódigo: ${codigo}\nSerie: ${serie}\nModelo: ${modelo}\n\nDecisión: ${decision}`, 10, 60);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Nombre del equipo:', 10, 75);
+      doc.setFont('helvetica', 'normal');
+      doc.text(nombre, 60, 75);
+
+      doc.setFont('helvetica', 'bold');
+      doc.text('Código de identificación:', 10, 85);
+      doc.setFont('helvetica', 'normal');
+      doc.text(codigo, 60, 85);
+
+      doc.setFont('helvetica', 'bold');
+      doc.text('No. de serie:', 10, 95);
+      doc.setFont('helvetica', 'normal');
+      doc.text(serie, 60, 95);
+
+      doc.setFont('helvetica', 'bold');
+      doc.text('Modelo:', 10, 105);
+      doc.setFont('helvetica', 'normal');
+      doc.text(modelo, 60, 105);
+
+      doc.setFont('helvetica', 'bold');
+      doc.text('Decisión final:', 10, 125);
+      doc.setFont('helvetica', 'normal');
+      doc.text(decision, 60, 125);
+
       doc.save(`Evaluacion_${nombre}_${modelo}.pdf`);
     }
   </script>
 </body>
 </html>
+
