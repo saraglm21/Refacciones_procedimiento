@@ -88,7 +88,7 @@
         year: 'numeric', month: 'long', day: 'numeric'
       });
 
-      const logoBase64 = await fetch('/static/Logo HSJ.png')
+      const logoBase64 = await fetch('Logo HSJ.png')
         .then(res => res.blob())
         .then(blob => new Promise(resolve => {
           const reader = new FileReader();
