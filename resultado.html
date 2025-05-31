@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultado de Evaluación</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      padding: 30px;
+    }
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    .info {
+      margin-bottom: 20px;
+    }
+    button {
+      display: block;
+      margin: auto;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Resultado de Evaluación</h1>
+    <div class="info" id="datosEvaluacion"></div>
+    <button onclick="descargarPDF()">Descargar PDF</button>
+  </div>
+
+  <script>
+    window.onload = function() {
+      const params = new URLSearchParams(window.location.search);
+      const nombre = params.get('nombre_equipo') || 'N/A';
+      const codigo = params.get('codigo') || 'N/A';
+      const serie = params.get('serie') || 'N/A';
+      const modelo = params.get('modelo') || 'N/A';
+      const decision = params.get('decision') || 'N/A';
+
+      document.getElementById('datosEvaluacion').innerHTML = `
+        <p><strong>Nombre del equipo:</strong> ${nombre}</p>
+        <p><strong>Código de identificación:</strong> ${codigo}</p>
+        <p><strong>No. de serie:</strong> ${serie}</p>
+        <p><strong>Modelo:</strong> ${modelo}</p>
+        <p><strong>Decisión final:</strong> ${decision}</p>
+      `;
+    }
+
+    async function descargarPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const nombre = new URLSearchParams(window.location.search).get('nombre_equipo') || 'N/A';
+      const codigo = new URLSearchParams(window.location.search).get('codigo') || 'N/A';
+      const serie = new URLSearchParams(window.location.search).get('serie') || 'N/A';
+      const modelo = new URLSearchParams(window.location.search).get('modelo') || 'N/A';
+      const decision = new URLSearchParams(window.location.search).get('decision') || 'N/A';
+
+      const logo = await fetch('/static/tec_monterrey_nuevo_logo.png')
+        .then(res => res.blob())
+        .then(blob => new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        }));
+
+      doc.addImage(logo, 'PNG', 10, 10, 40, 40);
+      doc.setFontSize(14);
+      doc.text('Tecnológico de Monterrey', 55, 25);
+
+      doc.setFontSize(12);
+      doc.text(`\n\nEvaluación de Refacción\n\nNombre del equipo: ${nombre}\nCódigo: ${codigo}\nSerie: ${serie}\nModelo: ${modelo}\n\nDecisión: ${decision}`, 10, 60);
+      doc.save(`Evaluacion_${nombre}_${modelo}.pdf`);
+    }
+  </script>
+</body>
+</html>
