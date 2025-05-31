@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evaluación de Refacciones</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .yes-no {
+      margin-bottom: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Evaluación de Refacciones</h1>
+  <form id="evaluationForm" action="resultado.html" method="get">
+    <div class="section">
+      <label>Nombre del equipo:</label>
+      <input type="text" name="nombre_equipo" required>
+    </div>
+    <div class="section">
+      <label>Código de identificación:</label>
+      <input type="text" name="codigo" required>
+    </div>
+    <div class="section">
+      <label>No. de serie:</label>
+      <input type="text" name="serie" required>
+    </div>
+    <div class="section">
+      <label>Modelo:</label>
+      <input type="text" name="modelo" required>
+    </div>
+
+    <div class="section">
+      <label>¿Es funcional?</label>
+      <div class="yes-no">
+        <input type="radio" name="funcional" value="sí" onclick="ocultarTodo(); setDecision('Reasignar a otra área'); mostrarEnviar()"> Sí
+        <input type="radio" name="funcional" value="parcial" onclick="mostrarDesde('puede_arreglarse')"> Parcial
+        <input type="radio" name="funcional" value="no" onclick="ocultarDesde('puede_arreglarse'); mostrarDesde('estado')"> No
+      </div>
+    </div>
+
+    <div id="puede_arreglarse" class="section hidden">
+      <label>¿Se puede arreglar?</label>
+      <div class="yes-no">
+        <input type="radio" name="arreglable" value="sí" onclick="mostrarDesde('vale_arreglar')"> Sí
+        <input type="radio" name="arreglable" value="no" onclick="ocultarDesde('vale_arreglar'); mostrarDesde('compatible')"> No
+      </div>
+    </div>
+
+    <div id="vale_arreglar" class="section hidden">
+      <label>¿Vale la pena arreglarlo?</label>
+      <div class="yes-no">
+        <input type="radio" name="vale_arreglo" value="sí" onclick="ocultarDesde('estado');setDecision('Reparar el equipo'); mostrarEnviar()"> Sí, cuesta menos del 50%
+        <input type="radio" name="vale_arreglo" value="no" onclick="mostrarDesde('estado')"> No, cuesta más del 50%
+      </div>
+    </div>
+
+    <div id="estado" class="section hidden">
+      <label>¿Está en buen estado físico?</label>
+      <div class="yes-no">
+        <input type="radio" name="estado_fisico" value="sí" onclick="mostrarDesde('compatible')"> Sí
+        <input type="radio" name="estado_fisico" value="no" onclick="ocultarDesde('compatible'); setDecision('Desechar el equipo'); mostrarEnviar()"> No
+      </div>
+    </div>
+
+    <div id="compatible" class="section hidden">
+      <label>¿Es compatible con otros equipos activos?</label>
+      <div class="yes-no">
+        <input type="radio" name="compatible" value="sí" onclick="mostrarDesde('necesita')"> Sí
+        <input type="radio" name="compatible" value="no" onclick="ocultarDesde(); setDecision('Considerar para venta, donación o enseñanza'); mostrarEnviar()"> No
+      </div>
+    </div>
+
+    <div id="necesita" class="section hidden">
+      <label>¿Se necesita el equipo? (o hay suficientes en inventario)</label>
+      <div class="yes-no">
+        <input type="radio" name="necesita" value="sí" onclick="ocultarDesde(); setDecision('Extraer componentes funcionales y exteriores'); mostrarEnviar()"> Sí
+        <input type="radio" name="necesita" value="no" onclick="ocultarDesde(); setDecision('Considerar para venta, donación o enseñanza'); mostrarEnviar()"> No
+      </div>
+    </div>
+
+    <input type="hidden" name="decision" id="campoDecision">
+
+    <div id="botonEnviar" class="section hidden">
+      <button type="submit">Enviar evaluación</button>
+    </div>
+  </form>
+
+  <script>
+    const secciones = ['puede_arreglarse', 'vale_arreglar', 'estado', 'compatible', 'necesita'];
+
+    function mostrarDesde(id) {
+      let mostrar = false;
+      secciones.forEach(sec => {
+        if (sec === id) mostrar = true;
+        if (mostrar) {
+          document.getElementById(sec).classList.add('hidden');
+          const inputs = document.querySelectorAll(`#${sec} input[type=radio]`);
+          inputs.forEach(input => input.checked = false);
+        }
+      });
+      document.getElementById(id).classList.remove('hidden');
+      document.getElementById('botonEnviar').classList.add('hidden');
+    }
+
+    function ocultarDesde(id) {
+      let ocultar = false;
+      secciones.forEach(sec => {
+        if (ocultar || sec === id) ocultar = true;
+        if (ocultar) {
+          document.getElementById(sec).classList.add('hidden');
+          const inputs = document.querySelectorAll(`#${sec} input[type=radio]`);
+          inputs.forEach(input => input.checked = false);
+        }
+      });
+      document.getElementById('botonEnviar').classList.add('hidden');
+    }
+
+    function ocultarTodo() {
+      secciones.forEach(sec => {
+        document.getElementById(sec).classList.add('hidden');
+        const inputs = document.querySelectorAll(`#${sec} input[type=radio]`);
+        inputs.forEach(input => input.checked = false);
+      });
+    }
+
+    function setDecision(valor) {
+      document.getElementById('campoDecision').value = valor;
+    }
+
+    function mostrarEnviar() {
+      document.getElementById('botonEnviar').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
