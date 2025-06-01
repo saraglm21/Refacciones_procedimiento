@@ -88,7 +88,7 @@
         year: 'numeric', month: 'long', day: 'numeric'
       });
 
-      const logoBase64 = await fetch('Logo HSJ.png')
+      const logoBase64 = await fetch('/static/Logo HSJ.png')
         .then(res => res.blob())
         .then(blob => new Promise(resolve => {
           const reader = new FileReader();
@@ -97,7 +97,7 @@
         }));
 
       const pageWidth = doc.internal.pageSize.getWidth();
-      const logoWidth = 90;
+      const logoWidth = 80;
       const logoHeight = 30;
       const xCenter = (pageWidth - logoWidth) / 2;
 
@@ -119,31 +119,30 @@
       doc.setFont('helvetica', 'bold');
       doc.text('Nombre del equipo:', 10, 75);
       doc.setFont('helvetica', 'normal');
-      doc.text(nombre, 60, 75);
+      doc.text(nombre, 55, 75);
 
       doc.setFont('helvetica', 'bold');
       doc.text('Código de identificación:', 10, 85);
       doc.setFont('helvetica', 'normal');
-      doc.text(codigo, 60, 85);
+      doc.text(codigo, 65, 85);
 
       doc.setFont('helvetica', 'bold');
       doc.text('No. de serie:', 10, 95);
       doc.setFont('helvetica', 'normal');
-      doc.text(serie, 60, 95);
+      doc.text(serie, 37.5, 95);
 
       doc.setFont('helvetica', 'bold');
       doc.text('Modelo:', 10, 105);
       doc.setFont('helvetica', 'normal');
-      doc.text(modelo, 60, 105);
+      doc.text(modelo, 30, 105);
 
       doc.setFont('helvetica', 'bold');
       doc.text('Decisión final:', 10, 125);
       doc.setFont('helvetica', 'normal');
-      doc.text(decision, 60, 125);
+      doc.text(decision, 40, 125);
 
       doc.save(`Evaluacion_${nombre}_${modelo}.pdf`);
     }
   </script>
 </body>
 </html>
-
