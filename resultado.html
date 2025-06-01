@@ -88,7 +88,7 @@
         year: 'numeric', month: 'long', day: 'numeric'
       });
 
-      const logoBase64 = await fetch('/static/Logo HSJ.png')
+      const logoBase64 = await fetch('Logo HSJ.png')
         .then(res => res.blob())
         .then(blob => new Promise(resolve => {
           const reader = new FileReader();
@@ -97,7 +97,7 @@
         }));
 
       const pageWidth = doc.internal.pageSize.getWidth();
-      const logoWidth = 80;
+      const logoWidth = 90;
       const logoHeight = 30;
       const xCenter = (pageWidth - logoWidth) / 2;
 
@@ -134,12 +134,12 @@
       doc.setFont('helvetica', 'bold');
       doc.text('Modelo:', 10, 105);
       doc.setFont('helvetica', 'normal');
-      doc.text(modelo, 30, 105);
+      doc.text(modelo, 40, 105);
 
       doc.setFont('helvetica', 'bold');
       doc.text('Decisión final:', 10, 125);
       doc.setFont('helvetica', 'normal');
-      doc.text(decision, 40, 125);
+      doc.text(decision, 30, 125);
 
       doc.save(`Evaluacion_${nombre}_${modelo}.pdf`);
     }
