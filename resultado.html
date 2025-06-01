@@ -134,12 +134,12 @@
       doc.setFont('helvetica', 'bold');
       doc.text('Modelo:', 10, 105);
       doc.setFont('helvetica', 'normal');
-      doc.text(modelo, 40, 105);
+      doc.text(modelo, 30, 105);
 
       doc.setFont('helvetica', 'bold');
       doc.text('Decisión final:', 10, 125);
       doc.setFont('helvetica', 'normal');
-      doc.text(decision, 30, 125);
+      doc.text(decision, 40, 125);
 
       doc.save(`Evaluacion_${nombre}_${modelo}.pdf`);
     }
